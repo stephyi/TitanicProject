@@ -28,8 +28,8 @@ test_data = pd.read_csv('../titanic/test.csv')
 
 ##Exploratory Data Analysis
 
-print('train dataset: %s, test dataset %s' %(str(train_dataset.shape), str(test_dataset.shape)) )
-train_dataset.head()
+print('train dataset: %s, test dataset %s' %(str(train_data.shape), str(test_data.shape)) )
+train_data.head()
 
 
 test_data = pd.read_csv('../titanic/test.csv')
@@ -41,7 +41,35 @@ test_data.head()
 
 women = train_data.loc[train_data.Sex == 'female']["Survived"]
 rate_women = sum(women)/len(women)
-print("% of women ho survived:",rate_women)
+print("% of women who survived:",rate_women)
+
+
+men = train_data.loc[train_data.Sex == 'male']["Survived"]
+rate_women = sum(men)/len(men)
+print("% of men who survived:",rate_women)
+
+##We want to find patterns in train.csvthathelp us predict whthher the oassenger in test.csv survived
+##Using gender_submission.csv assumes all female passengers survived and all male died
+##hence gender column is a strong indicator 
+
+
+##We use ML to discover more complex patterns thatcan potentially yield better informed predictions
+from sklearn.ensemble import RandomForestClassifier
+y = train_data["Survived"]
+
+features = ["Pclass","Sex","SibSp","Parch"]
+X = pd.get_dummies(train_data[features])
+X_test =pd.get_dummies(test_data[features])
+
+model = RandomForestClassifier(n_estimators=100, max_depth=5,random_state=1)
+model.fit(X,y)
+predictions = model.predict(X_test)
+
+
+
+output = pd.DataFrame({'PassengerId':test_data.PassengerId, 'Survived':predictions})
+output.to_csv('my_submission.csv',index=False)
+print("Saved my submission")
 
 
 
@@ -60,26 +88,7 @@ print("% of women ho survived:",rate_women)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+"""
 
 ## Taking care of missing data ##
 from sklearn.impute import SimpleImputer
@@ -110,6 +119,6 @@ sc_X = StandardScaler()
 X_train=sc_X.fit_transform(X_train)
 X_test= sc_X.transform(X_test)
 
-##How to handel missing data
+"""
 
 
