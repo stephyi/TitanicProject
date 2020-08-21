@@ -69,7 +69,7 @@ predictions = model.predict(X_test)
 
 output = pd.DataFrame({'PassengerId':test_data.PassengerId, 'Survived':predictions})
 output.to_csv('my_submission.csv',index=False)
-print("Saved my submission")
+print("Saved my submission").
 
 
 
